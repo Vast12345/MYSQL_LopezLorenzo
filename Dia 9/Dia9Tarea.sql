@@ -326,18 +326,39 @@ select min(presupuesto)
 from departamento;
 
 #4.
+delimiter //
+create function minTabla()
+returns varchar(100)
+reads sql data
+deterministic
+begin
+	declare valor int;
+		set valor = (select min(presupuesto) from departamento);
+	return valor;
+end //
+delimiter ;
+    
 select nombre, presupuesto
 from departamento
-where presupuesto = (select min(presupuesto) from departamento);
+where presupuesto = (select minTabla());
 
 #5.
 select max(presupuesto)
 from departamento;
 
 #6.
+delimiter //
+create procedure maxTabla(out valor int)
+begin
+	set valor = (select max(presupuesto) from departamento);
+end //
+delimiter ;
+set @max = 0;
+call maxTabla(@max);
+
 select nombre, presupuesto
 from departamento
-where presupuesto = (select max(presupuesto) from departamento);
+where presupuesto = @max;
 
 #7.
 select count(*)
